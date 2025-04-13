@@ -3,22 +3,20 @@ import pytest
 from data import test_data
 from helpers import (
     generate_random_string,
-    register_new_courier_and_return_login_password,
 )
 
 class TestCourierLogin:
 
     @allure.title("Проверка успешного логина")
-    def test_login_success(self, courier_api):
-        courier, _ = register_new_courier_and_return_login_password()
+    def test_login_success(self, courier_api, courier):
         response = courier_api.login(courier[0], courier[1])
         assert response.status_code == 200
         assert "id" in response.json()
 
     @allure.title("Проверка обязательных полей")
     @pytest.mark.parametrize("data", [
-        test_data.courier_login_missing_login(),
-        test_data.courier_login_missing_password()
+        test_data.COURIER_LOGIN_MISSING_LOGIN,
+        test_data.COURIER_LOGIN_MISSING_PASSWORD
     ])
     def test_login_missing_fields(self, courier_api, data):
         response = courier_api.login(*data)
@@ -34,8 +32,7 @@ class TestCourierLogin:
         assert response.status_code == 404
 
     @allure.title("Проверка логина с некорректным паролем")
-    def test_login_wrong_password(self, courier_api):
-        courier, _ = register_new_courier_and_return_login_password()
+    def test_login_wrong_password(self, courier_api, courier):
         password = generate_random_string(10)
         response = courier_api.login(courier[0], password)
         assert response.status_code == 404

@@ -7,17 +7,19 @@ class TestOrderCreation:
 
     @allure.title("Проверка создания заказа")
     @pytest.mark.parametrize("colors", [
-        test_data.first_color(),
-        test_data.second_color(),
-        test_data.both_colors(),
+        test_data.FIRST_COLOR,
+        test_data.SECOND_COLOR,
+        test_data.BOTH_COLORS,
         [],
     ])
     def test_create_order_with_colors(self, order_api, colors):
         delivery_date = datetime.now()+timedelta(days=3)
         response = order_api.create(
-            "test", "user", "test street", 4,
-            "+7 999 000 00 00", 5, delivery_date.strftime("%Y-%m-%d"),
-            "test order", colors
+            test_data.FIRST_NAME, test_data.LAST_NAME,
+            test_data.ADDRESS, test_data.METRO_STATION,
+            test_data.PHONE, test_data.RENT_TIME,
+            delivery_date.strftime("%Y-%m-%d"),
+            test_data.COMMENT, colors
         )
         assert response.status_code == 201
         assert "track" in response.json()

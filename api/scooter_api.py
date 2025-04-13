@@ -24,6 +24,10 @@ class CourierAPI:
         }
         return requests.post(f"{self.base}/login", json=data)
 
+    @allure.step("Удаление курьера")
+    def delete(self, id):
+        return requests.delete(f"{self.base}/id")
+
 
 class OrderAPI:
     def __init__(self):
